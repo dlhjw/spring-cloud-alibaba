@@ -62,7 +62,7 @@ public class DubboServiceRegistrationNonWebApplicationAutoConfiguration {
 	private static final String REST_PROTOCOL = "rest";
 
 	@Autowired
-	private ServiceRegistry serviceRegistry;
+	private ServiceRegistry serviceRegistry; //实现类为 NacosServiceRegistry
 
 	@Autowired
 	private Registration registration;
@@ -79,9 +79,11 @@ public class DubboServiceRegistrationNonWebApplicationAutoConfiguration {
 		return serverPort != null ? serverPort : pjp.proceed();
 	}
 
+	//监听 ApplicationStartedEvent 事件，该事件在刷新上下文之后，调用 application 命令前触发；
 	@EventListener(ApplicationStartedEvent.class)
 	public void onApplicationStarted() {
 		setServerPort();
+		//最终调用 NacosServiceRegistry.registry 方法实现服务注册
 		register();
 	}
 
